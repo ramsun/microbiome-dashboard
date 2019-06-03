@@ -93,7 +93,6 @@ def samples(sample):
     # at the top of the dataframe
     sample_data = sample_data.sort_values(sample, ascending = False)
 
-
     # Format the data to send as json
     data = {
         "otu_ids": sample_data.otu_id.values.tolist(),
