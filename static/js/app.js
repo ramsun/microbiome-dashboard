@@ -3,77 +3,73 @@ function buildMetadata(sample) {
   // @TODO: Complete the following function that builds the metadata panel
   // Use `d3.json` to fetch the metadata for a sample
   var url = `/metadata/${sample}`;
+  d3.json(url).then(function(response) {
+    
     // Use d3 to select the panel with id of `#sample-metadata`
-
+    var metadata_panel = d3.select("#sample-metadata");
     // Use `.html("") to clear any existing metadata
-
+    metadata_panel.html("");
+    
+    console.log(typeof response, response);
     // Use `Object.entries` to add each key and value pair to the panel
-    // Hint: Inside the loop, you will need to use d3 to append new
-    // tags for each key-value in the metadata.
+    Object.entries(response).forEach(function([key, value]) {      
+      // Use d3 to append one table row `tr` for each ufo_sighting object 
+      var row = metadata_panel.append("tr");
+      
+      // Use d3 to append 1 cell per ufo_sigthing value (create collumns)
+      var cell = row.append("td");
+      
+      // Use d3 to fill in each cell with ufo_sighting values (text)
+      cell.text(`${key}: ${value}`);
 
-    // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
+      // BONUS: Build the Gauge Chart
+      // buildGauge(data.WFREQ);
+    });
+  });
 }
 
 function buildCharts(sample) {
 
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
+  // Use `d3.json` to fetch the sample data for the plots
   var url = `/samples/${sample}`;
   d3.json(url).then(function(response) {
-  
+
+    // Pick the top 10 values to use for the traces
     var topSamples = response.sample_values.slice(0,10);
     var topIds = response.otu_ids.slice(0,10);
-    //var sampleLabels = response.otu_labels;
-    console.log(topSamples);
-    //console.log(sampleIds);
-    
-    
-    var pieTrace = {
-      x: response.otu_ids,
-      y: response.sample_values,
-      type: 'pie'
-    };
+    var sampleLabels = response.otu_labels.slice(0,10);
 
+    // Create the pie and bubble traces
+    var pieTrace = {
+      values: topIds,
+      labels: topSamples,
+      type: 'pie',
+      hoverinfo: sampleLabels
+    };  
     var bubbleTrace = {
-      x: response.otu_ids,
-      y: [10, 11, 12, 13],
+      x: topIds,
+      y: topSamples,
       mode: 'markers',
+      text: sampleLabels,
       marker: {
-        size: [40, 60, 80, 100]
+        size: topSamples,
+        color: topIds,
       }
     };
-    
-    // var trace = {
-    //   type: "scatter",
-    //   mode: "lines",
-    //   name: "Bigfoot Sightings",
-    //   x: response.map(data => data.year),
-    //   y: response.map(data => data.sightings),
-    //   line: {
-    //     color: "#17BECF"
-    //   }
-    // };
 
-    // var data = [trace];
+    // Store the traces in an array which can be passed into Plotly.newPlot()
+    pieData = [pieTrace];
+    bubbleData = [bubbleTrace];
 
     // var layout = {
-    //   title: "Bigfoot Sightings Per Year",
-    //   xaxis: {
-    //     type: "date"
-    //   },
-    //   yaxis: {
-    //     autorange: true,
-    //     type: "linear"
-    //   }
+    //   height: 400,
+    //   width: 600
     // };
 
-    // Plotly.newPlot("plot", data, layout);
+    // Create new plots
+    Plotly.newPlot("pie", pieData);
+    Plotly.newPlot("bubble", bubbleData);
   });
-    // @TODO: Build a Bubble Chart using the sample data
-
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
 }
 
 function init() {
