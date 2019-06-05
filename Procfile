@@ -1,1 +1,1 @@
-web: gunicorn microbiome_dashboard.app:app
+web: gunicorn app:app
