@@ -11,6 +11,7 @@ from sqlalchemy import create_engine
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
+
 app = Flask(__name__)
 
 
@@ -74,7 +75,6 @@ def sample_metadata(sample):
         sample_metadata["BBTYPE"] = result[5]
         sample_metadata["WFREQ"] = result[6]
 
-    print(sample_metadata)
     return jsonify(sample_metadata)
 
 
