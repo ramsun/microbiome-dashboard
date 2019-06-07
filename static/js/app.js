@@ -27,8 +27,8 @@ function buildMetadata(sample) {
   });
 }
 
-function buildCharts(sample) {
 
+function buildCharts(sample) {
   // Use `d3.json` to fetch the sample data for the plots
   var url = `/samples/${sample}`;
   d3.json(url).then(function(response) {
@@ -71,6 +71,7 @@ function buildCharts(sample) {
   });
 }
 
+
 function init() {
   // Grab a reference to the dropdown select element
   var selector = d3.select("#selDataset");
@@ -91,11 +92,13 @@ function init() {
   });
 }
 
+
 function optionChanged(newSample) {
   // Fetch new data each time a new sample is selected
   buildCharts(newSample);
   buildMetadata(newSample);
 }
+
 
 // Initialize the dashboard
 init();
